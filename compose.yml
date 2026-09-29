@@ -1,0 +1,36 @@
+services:
+  translate:
+    build: .
+    container_name: translate
+    restart: unless-stopped
+    depends_on:
+      - privatemode-proxy
+    networks:
+      - default
+      - proxy_net
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 128m
+
+  # Checks Privatemode's confidential hardware and encrypts each request to it.
+  privatemode-proxy:
+    image: ghcr.io/edgelesssys/privatemode/privatemode-proxy:v1.57.0
+    container_name: translate-privatemode
+    restart: unless-stopped
+    command: ["--apiKey", "@/run/secrets/privatemode_api_key", "--workspace", "/tmp", "--log-level", "warn"]
+    secrets:
+      - privatemode_api_key
+    user: "65534:65534"
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 256m
+
+secrets:
+  privatemode_api_key:
+    environment: PRIVATEMODE_API_KEY
+
+networks:
+  proxy_net:
+    external: true
