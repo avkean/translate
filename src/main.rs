@@ -20,8 +20,11 @@ use serde::Deserialize;
 use serde_json::{Value, json};
 
 const PAGE: &str = include_str!("../static/index.html");
-const CSS: &str = include_str!("../static/app.css");
-const JS: &str = include_str!("../static/app.js");
+const CSS: &[u8] = include_bytes!("../static/app.css");
+const JS: &[u8] = include_bytes!("../static/app.js");
+const FAVICON: &[u8] = include_bytes!("../static/favicon.svg");
+const FAVICON_PNG: &[u8] = include_bytes!("../static/favicon-32.png");
+const TOUCH_ICON: &[u8] = include_bytes!("../static/apple-touch-icon.png");
 // Versioned file name, so browsers can cache it for good.
 const FONT: &[u8] = include_bytes!("../static/fonts/nunito-sans-5.3.0.woff2");
 
@@ -134,6 +137,18 @@ async fn main() {
             "/app.js",
             get(|| async { asset("text/javascript; charset=utf-8", JS) }),
         )
+        .route(
+            "/favicon.svg",
+            get(|| async { asset("image/svg+xml", FAVICON) }),
+        )
+        .route(
+            "/favicon-32.png",
+            get(|| async { asset("image/png", FAVICON_PNG) }),
+        )
+        .route(
+            "/apple-touch-icon.png",
+            get(|| async { asset("image/png", TOUCH_ICON) }),
+        )
         .route("/fonts/nunito-sans-5.3.0.woff2", get(font))
         .route("/translate", post(translate))
         .layer(DefaultBodyLimit::max(MAX_BODY))
@@ -151,7 +166,7 @@ async fn main() {
         .expect("running server");
 }
 
-fn asset(content_type: &'static str, body: &'static str) -> impl IntoResponse {
+fn asset(content_type: &'static str, body: &'static [u8]) -> impl IntoResponse {
     (
         [
             (header::CONTENT_TYPE, content_type),
