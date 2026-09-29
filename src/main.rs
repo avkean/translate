@@ -198,6 +198,10 @@ async fn security_headers(mut res: Response) -> Response {
     );
     h.insert(header::X_FRAME_OPTIONS, HeaderValue::from_static("DENY"));
     h.insert(
+        header::STRICT_TRANSPORT_SECURITY,
+        HeaderValue::from_static("max-age=31536000"),
+    );
+    h.insert(
         header::REFERRER_POLICY,
         HeaderValue::from_static("no-referrer"),
     );
