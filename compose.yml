@@ -15,10 +15,10 @@ services:
 
   # Checks Privatemode's confidential hardware and encrypts each request to it.
   privatemode-proxy:
-    image: ghcr.io/edgelesssys/privatemode/privatemode-proxy:v1.57.0
+    image: ghcr.io/edgelesssys/privatemode/privatemode-proxy:v1.58.0
     container_name: translate-privatemode
     restart: unless-stopped
-    command: ["--apiKey", "@/run/secrets/privatemode_api_key", "--workspace", "/tmp", "--log-level", "warn"]
+    command: ["--api-key", "@/run/secrets/privatemode_api_key", "--api-key-fallback", "always", "--workspace", "/tmp", "--log-level", "warn"]
     secrets:
       - privatemode_api_key
     user: "65534:65534"
