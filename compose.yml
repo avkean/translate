@@ -22,7 +22,7 @@ services:
     secrets:
       - privatemode_api_key
     user: "65534:65534"
-    tmpfs: [/tmp]
+    tmpfs: ["/tmp:mode=1777"]
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
     mem_limit: 256m
